@@ -1,0 +1,13 @@
+{
+  "packages": {
+    ".": {
+      "release-type": "node",
+      "bump-minor-pre-major": true,
+      "extra-files": [
+        "backend/pyproject.toml",
+        "typespec/package.json",
+        "render.yaml"
+      ]
+    }
+  }
+}

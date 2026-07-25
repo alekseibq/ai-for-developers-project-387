@@ -1,0 +1,1 @@
+npx --prefix frontend commitlint --edit "$1" --config frontend/.commitlintrc.json

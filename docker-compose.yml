@@ -1,0 +1,51 @@
+services:
+  mongo:
+    image: mongo:7
+    volumes:
+      - mongo-data:/data/db
+    healthcheck:
+      test: echo 'db.runCommand("ping").ok' | mongosh --quiet
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    build:
+      context: .
+      dockerfile: docker/backend.Dockerfile
+    env_file:
+      - .env
+    ports:
+      - "8000:10000"
+    depends_on:
+      mongo:
+        condition: service_healthy
+
+  frontend:
+    build:
+      context: .
+      dockerfile: docker/frontend.Dockerfile
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+
+  e2e:
+    profiles:
+      - e2e
+    image: mcr.microsoft.com/playwright:v1.60.0-jammy
+    working_dir: /e2e
+    volumes:
+      - ./frontend:/e2e
+      - /e2e/node_modules
+    environment:
+      - BASE_URL=http://frontend
+    depends_on:
+      - frontend
+    command:
+      - sh
+      - -c
+      - "npm ci && npx playwright test --config=tests/e2e/playwright.config.ts"
+
+volumes:
+  mongo-data:
