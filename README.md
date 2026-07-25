@@ -1,7 +1,7 @@
 # CalCom Clone
 
 ### Hexlet tests and linter status:
-[![Actions Status](https://github.com/alekseibq/ai-for-developers-project-386/actions/workflows/hexlet-check.yml/badge.svg)](https://github.com/alekseibq/ai-for-developers-project-386/actions)
+[![Actions Status](https://github.com/alekseibq/ai-for-developers-project-387/actions/workflows/hexlet-check.yml/badge.svg)](https://github.com/alekseibq/ai-for-developers-project-387/actions)
 
 Full-stack meeting booking app — guests browse meeting types, pick time slots, book appointments; admins manage meeting types (CRUD).
 
@@ -49,7 +49,7 @@ Render Blueprint doesn't support `type: static`, so create it separately:
 2. **Root Directory:** `frontend`
 3. **Build Command:** `npm ci && npm run build`
 4. **Publish Directory:** `dist`
-5. **Environment Variable:** `VITE_API_BASE = https://hexlet-ai-for-devs-386-backend.onrender.com/api/v1`
+5. **Environment Variable:** `VITE_API_BASE = https://hexlet-ai-for-devs-387-backend.onrender.com/api/v1`
 6. **Routes (SPA fallback):** `/*` → `/index.html` (Rewrite)
 
 ### Verify

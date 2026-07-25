@@ -1,6 +1,6 @@
 services:
   - type: web
-    name: hexlet-ai-for-devs-386-backend
+    name: hexlet-ai-for-devs-387-backend
     runtime: docker
     plan: free
     port: 10000
@@ -13,10 +13,10 @@ services:
         value: "0.1.0"
 
   - type: static_site
-    name: hexlet-ai-for-devs-386-frontend
+    name: hexlet-ai-for-devs-387-frontend
     rootDir: frontend
     buildCommand: npm ci && npm run build
     publishPath: dist
     envVars:
       - key: VITE_API_BASE
-        value: https://hexlet-ai-for-devs-386-backend.onrender.com/api/v1
+        value: https://hexlet-ai-for-devs-387-backend.onrender.com/api/v1
