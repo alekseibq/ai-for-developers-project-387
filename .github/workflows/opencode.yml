@@ -30,15 +30,14 @@ jobs:
           git config --global user.email "opencode@users.noreply.github.com"
           git config --global user.name "opencode[bot]"
 
-      - name: Checkout PR branch if comment is on a pull request
+      - name: Reset PR branch to match main for opencode
         if: github.event.issue.pull_request
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           HEAD_REF=$(gh pr view "${{ github.event.issue.number }}" \
             --json headRefName --jq .headRefName)
-          git fetch origin "$HEAD_REF"
-          git checkout "$HEAD_REF"
+          git push origin HEAD:refs/heads/"$HEAD_REF" --force
 
       - name: Run opencode
         uses: anomalyco/opencode/github@latest
