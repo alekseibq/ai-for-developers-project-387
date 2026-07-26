@@ -23,16 +23,12 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v6
         with:
-          persist-credentials: false
+          persist-credentials: true
 
       - name: Configure git identity
         run: |
           git config --global user.email "opencode@users.noreply.github.com"
           git config --global user.name "opencode[bot]"
-
-      - name: Configure git authentication
-        run: |
-          git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git
 
       - name: Run opencode
         uses: anomalyco/opencode/github@latest
