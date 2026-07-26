@@ -16,8 +16,15 @@ async function post<T>(path: string, body: unknown): Promise<Result<T>> {
   return res.json() as Promise<Result<T>>;
 }
 
+async function del<T>(path: string): Promise<Result<T>> {
+  const res = await fetch(`${BASE}${path}`, {
+    method: "DELETE",
+  });
+  return res.json() as Promise<Result<T>>;
+}
+
 export function getHealth(): Promise<Result<HealthResponse>> {
   return request<HealthResponse>("/health");
 }
 
-export { request, post };
+export { request, post, del };

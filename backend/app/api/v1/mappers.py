@@ -1,7 +1,14 @@
 from datetime import datetime
 
-from app.api.v1.dto import BookingRawDto, BookingRichDto, MeetingTypeDto, SlotDto
-from app.domain.objects import BookingObj, MeetingTypeObj, SlotObj
+from app.api.v1.dto import (
+    BookingRawDto,
+    BookingRichDto,
+    BreakDto,
+    HolidayDto,
+    MeetingTypeDto,
+    SlotDto,
+)
+from app.domain.objects import BookingObj, BreakObj, HolidayObj, MeetingTypeObj, SlotObj
 
 
 def meeting_type_obj_to_dto(obj: MeetingTypeObj) -> MeetingTypeDto:
@@ -39,4 +46,22 @@ def booking_obj_to_rich_dto(
         end_time=end_time,
         created_at=obj.created_at,
         meeting_type=meeting_type_obj_to_dto(meeting_type),
+    )
+
+
+def break_obj_to_dto(obj: BreakObj) -> BreakDto:
+    return BreakDto(
+        id=obj.id,
+        name=obj.name,
+        day_of_week=obj.day_of_week,
+        start_time=obj.start_time,
+        end_time=obj.end_time,
+    )
+
+
+def holiday_obj_to_dto(obj: HolidayObj) -> HolidayDto:
+    return HolidayDto(
+        id=obj.id,
+        name=obj.name,
+        date=obj.date,
     )

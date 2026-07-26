@@ -40,6 +40,26 @@ const routes = [
         name: "bookings",
         component: () => import("@/pages/admin/BookingsPage.vue"),
       },
+      {
+        path: "breaks",
+        name: "breaks",
+        component: () => import("@/pages/admin/BreaksPage.vue"),
+      },
+      {
+        path: "breaks/new",
+        name: "create-break",
+        component: () => import("@/pages/admin/CreateBreakPage.vue"),
+      },
+      {
+        path: "holidays",
+        name: "holidays",
+        component: () => import("@/pages/admin/HolidaysPage.vue"),
+      },
+      {
+        path: "holidays/new",
+        name: "create-holiday",
+        component: () => import("@/pages/admin/CreateHolidayPage.vue"),
+      },
     ],
   },
 ];

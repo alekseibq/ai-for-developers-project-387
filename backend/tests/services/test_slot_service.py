@@ -1,9 +1,9 @@
-from datetime import date, datetime, timedelta
+from datetime import date, datetime, time, timedelta
 from unittest.mock import AsyncMock
 
 import pytest
 
-from app.domain.objects import MeetingTypeObj
+from app.domain.objects import BreakObj, HolidayObj, MeetingTypeObj
 from app.services.slot_service import SlotService
 
 
@@ -45,8 +45,19 @@ def mock_booking_repo() -> AsyncMock:
 
 
 @pytest.fixture
-def service(mock_booking_repo) -> SlotService:
-    return SlotService(booking_repo=mock_booking_repo)
+def mock_break_holiday_repo() -> AsyncMock:
+    repo = AsyncMock()
+    repo.find_all_breaks = AsyncMock(return_value=[])
+    repo.find_all_holidays = AsyncMock(return_value=[])
+    return repo
+
+
+@pytest.fixture
+def service(mock_booking_repo, mock_break_holiday_repo) -> SlotService:
+    return SlotService(
+        booking_repo=mock_booking_repo,
+        break_holiday_repo=mock_break_holiday_repo,
+    )
 
 
 class TestFindAvailableSlots:
@@ -215,3 +226,66 @@ class TestFindAvailableSlots:
         slots = await service.find_available_slots(monday, meeting_type_30min)
 
         assert len(slots) == 14
+
+    async def test_holiday_returns_empty(
+        self,
+        service: SlotService,
+        meeting_type_30min: MeetingTypeObj,
+        mock_break_holiday_repo: AsyncMock,
+    ):
+        monday = date(2026, 6, 15)
+        mock_break_holiday_repo.find_all_holidays = AsyncMock(
+            return_value=[HolidayObj(id="h1", name="Test Holiday", date=monday)],
+        )
+
+        slots = await service.find_available_slots(monday, meeting_type_30min)
+
+        assert slots == []
+
+    async def test_break_excludes_slots(
+        self,
+        service: SlotService,
+        meeting_type_30min: MeetingTypeObj,
+        mock_break_holiday_repo: AsyncMock,
+    ):
+        monday = date(2026, 6, 15)
+        mock_break_holiday_repo.find_all_breaks = AsyncMock(
+            return_value=[BreakObj(id="b1", name="Lunch", day_of_week=0, start_time=time(12, 0), end_time=time(13, 0))],
+        )
+
+        slots = await service.find_available_slots(monday, meeting_type_30min)
+
+        assert len(slots) == 16
+        for slot in slots:
+            slot_start_hour = slot.start_time.hour
+            assert slot_start_hour < 12 or slot_start_hour >= 13
+
+    async def test_break_on_different_day_does_not_affect(
+        self,
+        service: SlotService,
+        meeting_type_30min: MeetingTypeObj,
+        mock_break_holiday_repo: AsyncMock,
+    ):
+        monday = date(2026, 6, 15)
+        mock_break_holiday_repo.find_all_breaks = AsyncMock(
+            return_value=[BreakObj(id="b1", name="Weekend", day_of_week=6, start_time=time(12, 0), end_time=time(13, 0))],
+        )
+
+        slots = await service.find_available_slots(monday, meeting_type_30min)
+
+        assert len(slots) == 18
+
+    async def test_holiday_on_different_date_does_not_affect(
+        self,
+        service: SlotService,
+        meeting_type_30min: MeetingTypeObj,
+        mock_break_holiday_repo: AsyncMock,
+    ):
+        monday = date(2026, 6, 15)
+        mock_break_holiday_repo.find_all_holidays = AsyncMock(
+            return_value=[HolidayObj(id="h1", name="Future Holiday", date=date(2026, 7, 1))],
+        )
+
+        slots = await service.find_available_slots(monday, meeting_type_30min)
+
+        assert len(slots) == 18

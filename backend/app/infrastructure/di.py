@@ -1,14 +1,21 @@
 from fastapi import Depends
 
 from app.repositories.booking_repository import BookingRepository
+from app.repositories.break_holiday_repository import BreakHolidayRepository
 from app.repositories.health import HealthRepository
 from app.repositories.meeting_type_repository import MeetingTypeRepository
 from app.services.propose_slot_dates_service import ProposeSlotDatesService
 from app.services.slot_service import SlotService
+from app.usecases.breaks import CreateBreakUseCase, DeleteBreakUseCase, ListAllBreaksUseCase
 from app.usecases.create_booking_use_case import CreateBookingUseCase
 from app.usecases.create_meeting_type_use_case import CreateMeetingTypeUseCase
 from app.usecases.find_slots_use_case import FindSlotsUseCase
 from app.usecases.health import HealthUseCase
+from app.usecases.holidays import (
+    CreateHolidayUseCase,
+    DeleteHolidayUseCase,
+    ListAllHolidaysUseCase,
+)
 from app.usecases.list_all_meeting_type_use_case import ListAllMeetingTypeUseCase
 from app.usecases.list_upcoming_bookings_use_case import ListUpcomingBookingsUseCase
 
@@ -31,10 +38,15 @@ def booking_repository() -> BookingRepository:
     return BookingRepository()
 
 
+def break_holiday_repository() -> BreakHolidayRepository:
+    return BreakHolidayRepository()
+
+
 def slot_service(
     booking_repo: BookingRepository = Depends(booking_repository),
+    break_holiday_repo: BreakHolidayRepository = Depends(break_holiday_repository),
 ) -> SlotService:
-    return SlotService(booking_repo=booking_repo)
+    return SlotService(booking_repo=booking_repo, break_holiday_repo=break_holiday_repo)
 
 
 def propose_slot_dates_service() -> ProposeSlotDatesService:
@@ -79,3 +91,39 @@ def list_upcoming_bookings_usecase(
     booking_repo: BookingRepository = Depends(booking_repository),
 ) -> ListUpcomingBookingsUseCase:
     return ListUpcomingBookingsUseCase(booking_repo=booking_repo)
+
+
+def list_all_breaks_usecase(
+    repo: BreakHolidayRepository = Depends(break_holiday_repository),
+) -> ListAllBreaksUseCase:
+    return ListAllBreaksUseCase(repo=repo)
+
+
+def create_break_usecase(
+    repo: BreakHolidayRepository = Depends(break_holiday_repository),
+) -> CreateBreakUseCase:
+    return CreateBreakUseCase(repo=repo)
+
+
+def delete_break_usecase(
+    repo: BreakHolidayRepository = Depends(break_holiday_repository),
+) -> DeleteBreakUseCase:
+    return DeleteBreakUseCase(repo=repo)
+
+
+def list_all_holidays_usecase(
+    repo: BreakHolidayRepository = Depends(break_holiday_repository),
+) -> ListAllHolidaysUseCase:
+    return ListAllHolidaysUseCase(repo=repo)
+
+
+def create_holiday_usecase(
+    repo: BreakHolidayRepository = Depends(break_holiday_repository),
+) -> CreateHolidayUseCase:
+    return CreateHolidayUseCase(repo=repo)
+
+
+def delete_holiday_usecase(
+    repo: BreakHolidayRepository = Depends(break_holiday_repository),
+) -> DeleteHolidayUseCase:
+    return DeleteHolidayUseCase(repo=repo)

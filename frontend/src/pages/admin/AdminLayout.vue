@@ -6,6 +6,8 @@ const route = useRoute();
 const navItems = [
   { name: "Типы событий", path: "/admin/meeting_types" },
   { name: "Предстоящие Брони", path: "/admin/bookings" },
+  { name: "Перерывы", path: "/admin/breaks" },
+  { name: "Праздничные дни", path: "/admin/holidays" },
 ];
 </script>
 

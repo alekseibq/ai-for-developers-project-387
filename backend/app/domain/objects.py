@@ -1,4 +1,4 @@
-from datetime import date, datetime
+from datetime import date, datetime, time
 
 from pydantic import BaseModel
 
@@ -33,3 +33,17 @@ class BookingObj(BaseModel):
 class SlotDateRangeObj(BaseModel):
     min_date: date
     max_date: date
+
+
+class BreakObj(BaseModel):
+    id: str
+    name: str
+    day_of_week: int
+    start_time: time
+    end_time: time
+
+
+class HolidayObj(BaseModel):
+    id: str
+    name: str
+    date: date

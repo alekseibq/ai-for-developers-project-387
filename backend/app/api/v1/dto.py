@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import date, datetime, time
 
 from pydantic import BaseModel
 
@@ -42,3 +42,29 @@ class CreateBookingRequest(BaseModel):
     meeting_type_id: str
     guest_name: str
     start_time: datetime
+
+
+class BreakDto(BaseModel):
+    id: str
+    name: str
+    day_of_week: int
+    start_time: time
+    end_time: time
+
+
+class CreateBreakRequest(BaseModel):
+    name: str
+    day_of_week: int
+    start_time: time
+    end_time: time
+
+
+class HolidayDto(BaseModel):
+    id: str
+    name: str
+    date: date
+
+
+class CreateHolidayRequest(BaseModel):
+    name: str
+    date: date

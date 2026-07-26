@@ -25,3 +25,5 @@ def test_app_routers_are_registered():
     assert "/api/v1/meeting-types" in routes
     assert "/api/v1/slots" in routes
     assert "/api/v1/bookings" in routes
+    assert "/api/v1/breaks" in routes
+    assert "/api/v1/holidays" in routes

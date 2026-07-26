@@ -44,3 +44,29 @@ export interface BookingRichDto {
   created_at: string;
   meeting_type: MeetingType;
 }
+
+export interface BreakDto {
+  id: string;
+  name: string;
+  day_of_week: number;
+  start_time: string;
+  end_time: string;
+}
+
+export interface CreateBreakRequest {
+  name: string;
+  day_of_week: number;
+  start_time: string;
+  end_time: string;
+}
+
+export interface HolidayDto {
+  id: string;
+  name: string;
+  date: string;
+}
+
+export interface CreateHolidayRequest {
+  name: string;
+  date: string;
+}
