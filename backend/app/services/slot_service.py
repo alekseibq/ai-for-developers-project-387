@@ -16,30 +16,50 @@ class SlotService:
         if day.weekday() >= 5:  # noqa: PLR2004
             return []
 
+        if self._is_holiday(day, meeting_type):
+            return []
+
         day_start = datetime.combine(day, time.min)
         day_end = datetime.combine(day, time.max)
         occupied = await self._booking_repo.find_occupied_intervals(day_start, day_end)
 
-        work_start = datetime.combine(day, time(9, 0))
-        work_end = datetime.combine(day, time(18, 0))
+        work_start = datetime.combine(day, meeting_type.working_hours_start)
+        work_end = datetime.combine(day, meeting_type.working_hours_end)
         duration = timedelta(minutes=meeting_type.duration_minutes)
+
+        break_intervals = self._get_break_intervals(day, meeting_type)
 
         candidates: list[SlotObj] = []
         cursor = work_start
         while cursor + duration <= work_end:
             slot = SlotObj(start_time=cursor, end_time=cursor + duration)
-            if not self._overlaps(slot, occupied):
+            if not self._overlaps(slot, occupied) and not self._overlaps(slot, break_intervals):
                 candidates.append(slot)
             cursor += duration
 
         return candidates
 
+    def _is_holiday(self, day: date, meeting_type: MeetingTypeObj) -> bool:
+        return any(h.date == day for h in meeting_type.holidays)
+
+    def _get_break_intervals(
+        self,
+        day: date,
+        meeting_type: MeetingTypeObj,
+    ) -> list[tuple[datetime, datetime]]:
+        intervals = []
+        for b in meeting_type.breaks:
+            start = datetime.combine(day, b.start_time)
+            end = datetime.combine(day, b.end_time)
+            intervals.append((start, end))
+        return intervals
+
     def _overlaps(
         self,
         slot: SlotObj,
-        occupied: list[tuple[datetime, datetime]],
+        intervals: list[tuple[datetime, datetime]],
     ) -> bool:
-        for occ_start, occ_end in occupied:
+        for occ_start, occ_end in intervals:
             if slot.start_time < occ_end and slot.end_time > occ_start:
                 return True
         return False

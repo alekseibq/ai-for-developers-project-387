@@ -1,6 +1,13 @@
 from datetime import datetime
 
-from app.api.v1.dto import BookingRawDto, BookingRichDto, MeetingTypeDto, SlotDto
+from app.api.v1.dto import (
+    BookingRawDto,
+    BookingRichDto,
+    BreakDto,
+    HolidayDto,
+    MeetingTypeDto,
+    SlotDto,
+)
 from app.domain.objects import BookingObj, MeetingTypeObj, SlotObj
 
 
@@ -10,6 +17,16 @@ def meeting_type_obj_to_dto(obj: MeetingTypeObj) -> MeetingTypeDto:
         name=obj.name,
         description=obj.description,
         duration_minutes=obj.duration_minutes,
+        working_hours_start=obj.working_hours_start.strftime("%H:%M"),
+        working_hours_end=obj.working_hours_end.strftime("%H:%M"),
+        breaks=[
+            BreakDto(
+                start_time=b.start_time.strftime("%H:%M"),
+                end_time=b.end_time.strftime("%H:%M"),
+            )
+            for b in obj.breaks
+        ],
+        holidays=[HolidayDto(date=h.date, name=h.name) for h in obj.holidays],
     )
 
 

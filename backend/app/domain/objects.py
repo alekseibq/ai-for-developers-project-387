@@ -1,4 +1,4 @@
-from datetime import date, datetime
+from datetime import date, datetime, time
 
 from pydantic import BaseModel
 
@@ -10,11 +10,25 @@ class HealthObj(BaseModel):
     uptime: float
 
 
+class BreakObj(BaseModel):
+    start_time: time
+    end_time: time
+
+
+class HolidayObj(BaseModel):
+    date: date
+    name: str
+
+
 class MeetingTypeObj(BaseModel):
     id: str
     name: str
     description: str
     duration_minutes: int
+    working_hours_start: time = time(9, 0)
+    working_hours_end: time = time(18, 0)
+    breaks: list[BreakObj] = []
+    holidays: list[HolidayObj] = []
 
 
 class SlotObj(BaseModel):

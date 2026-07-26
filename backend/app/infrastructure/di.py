@@ -11,6 +11,7 @@ from app.usecases.find_slots_use_case import FindSlotsUseCase
 from app.usecases.health import HealthUseCase
 from app.usecases.list_all_meeting_type_use_case import ListAllMeetingTypeUseCase
 from app.usecases.list_upcoming_bookings_use_case import ListUpcomingBookingsUseCase
+from app.usecases.update_meeting_type_use_case import UpdateMeetingTypeUseCase
 
 
 def health_repository() -> HealthRepository:
@@ -55,12 +56,12 @@ def create_meeting_type_usecase(
 
 def find_slots_usecase(
     slot_service: SlotService = Depends(slot_service),
-    propose_dates_service: ProposeSlotDatesService = Depends(propose_slot_dates_service),
+    propose_slot_dates_service: ProposeSlotDatesService = Depends(propose_slot_dates_service),
     meeting_type_repo: MeetingTypeRepository = Depends(meeting_type_repository),
 ) -> FindSlotsUseCase:
     return FindSlotsUseCase(
         slot_service=slot_service,
-        propose_dates_service=propose_dates_service,
+        propose_dates_service=propose_slot_dates_service,
         meeting_type_repo=meeting_type_repo,
     )
 
@@ -79,3 +80,9 @@ def list_upcoming_bookings_usecase(
     booking_repo: BookingRepository = Depends(booking_repository),
 ) -> ListUpcomingBookingsUseCase:
     return ListUpcomingBookingsUseCase(booking_repo=booking_repo)
+
+
+def update_meeting_type_usecase(
+    repo: MeetingTypeRepository = Depends(meeting_type_repository),
+) -> UpdateMeetingTypeUseCase:
+    return UpdateMeetingTypeUseCase(repo=repo)

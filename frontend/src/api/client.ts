@@ -16,8 +16,17 @@ async function post<T>(path: string, body: unknown): Promise<Result<T>> {
   return res.json() as Promise<Result<T>>;
 }
 
+async function patch<T>(path: string, body: unknown): Promise<Result<T>> {
+  const res = await fetch(`${BASE}${path}`, {
+    method: "PATCH",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(body),
+  });
+  return res.json() as Promise<Result<T>>;
+}
+
 export function getHealth(): Promise<Result<HealthResponse>> {
   return request<HealthResponse>("/health");
 }
 
-export { request, post };
+export { request, post, patch };
