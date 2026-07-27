@@ -1,3 +1,4 @@
+from datetime import datetime
 from typing import Any
 
 from bson import ObjectId
@@ -9,7 +10,7 @@ from app.infrastructure.database import Database
 def _parse_time(value: Any) -> str:
     if isinstance(value, str):
         return value
-    return value.strftime("%H:%M")
+    return value.strftime("%H:%M")  # type: ignore[no-any-return]
 
 
 class MeetingTypeRepository:
