@@ -1,9 +1,10 @@
 {
   "packages": {
-    "frontend": {
+    ".": {
       "release-type": "node",
       "bump-minor-pre-major": true,
       "extra-files": [
+        "frontend/package.json",
         "backend/pyproject.toml",
         "typespec/package.json",
         "render.yaml"
