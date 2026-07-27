@@ -71,10 +71,10 @@ jobs:
               --label "cost-control" \
               --body "Workflow run #${{ github.run_id }} was blocked.
 
-        **Exceeded limit**: $EXCEEDED
-        **Repository**: ${{ github.repository }}
-        **Trigger**: ${{ github.event_name }}
-        **Workflow URL**: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}" \
+              **Exceeded limit**: $EXCEEDED
+              **Repository**: ${{ github.repository }}
+              **Trigger**: ${{ github.event_name }}
+              **Workflow URL**: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}" \
               --repo "${{ github.repository }}" 2>/dev/null || echo "Warning: could not create alert issue"
 
             echo "Rate limit exceeded: $EXCEEDED. Workflow blocked."
