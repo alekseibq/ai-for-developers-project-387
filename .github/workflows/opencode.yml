@@ -5,6 +5,8 @@ on:
     types: [created]
   pull_request_review_comment:
     types: [created]
+  issues:
+    types: [opened]
 
 jobs:
   opencode:
@@ -51,3 +53,33 @@ jobs:
             Always use Conventional Commits format for all commit messages: type(scope): description.
             Allowed types: feat, fix, docs, style, refactor, perf, test, build, ci, chore, revert.
             Scope is optional but encouraged (e.g. backend, frontend, typespec, infra).
+
+  explain-issue:
+    if: github.event_name == 'issues' && github.event.action == 'opened'
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
+      issues: write
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Run opencode to explain issue
+        uses: anomalyco/opencode/github@latest
+        env:
+          OPENCODE_API_KEY: ${{ secrets.OPENCODE_API_KEY }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          model: opencode/deepseek-v4-flash-free
+          use_github_token: true
+          prompt: |
+            A new issue has been created. Analyze the issue and post a comment explaining:
+            - What the issue is about
+            - What needs to be done
+            - Any relevant context from the codebase
+            - Potential approaches or areas to investigate
+
+            Issue #${{ github.event.issue.number }}: ${{ github.event.issue.title }}
+
+            ${{ github.event.issue.body }}
