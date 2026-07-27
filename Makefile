@@ -1,6 +1,6 @@
 POETRY = $(shell command -v poetry 2>/dev/null || echo ~/.local/bin/poetry)
 
-.PHONY: dev dev-rebuild dev-backend dev-frontend build test lint coverage generate e2e e2e-dev ci docker-clean
+.PHONY: dev dev-rebuild dev-backend dev-frontend build test lint coverage generate e2e e2e-dev ci lighthouse docker-clean
 
 dev:
 	docker compose up --build
@@ -36,6 +36,11 @@ e2e-dev:
 	cd frontend && npm run e2e
 
 ci: test lint e2e
+
+lighthouse:
+	cd frontend && npx lighthouse http://localhost:5173 \
+		--output=json --output-path=./lighthouse-report.json \
+		--chrome-flags="--headless"
 
 docker-clean:
 	docker container prune -f --filter "until=24h"

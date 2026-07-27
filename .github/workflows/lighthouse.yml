@@ -1,0 +1,33 @@
+name: Lighthouse Audit
+
+on:
+  schedule:
+    - cron: "0 2 * * *"
+  workflow_dispatch:
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      issues: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Run Lighthouse
+        run: |
+          npx lighthouse https://hexlet-ai-for-devs-387-frontend.onrender.com \
+            --output=json \
+            --output-path=./lighthouse-report.json \
+            --chrome-flags="--headless --no-sandbox"
+
+      - name: Analyze with OpenCode
+        uses: anomalyco/opencode/github@latest
+        with:
+          prompt: |
+            Read ./lighthouse-report.json.
+            Compare LCP, CLS, INP with the values in
+            docs/performance-baseline.md.
+            For metrics that degraded by more than 10%,
+            identify likely culprits in recent commits and
+            create an issue with specific recommendations.
