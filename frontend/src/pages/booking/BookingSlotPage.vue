@@ -101,6 +101,10 @@ function isDateAvailable(date: Date): boolean {
   if (day === 0 || day === 6) return false;
   if (date < today) return false;
   if (date > maxDate) return false;
+  if (meetingType.value) {
+    const dateStr = formatDateKey(date);
+    if (meetingType.value.holidays.some((h) => h.date === dateStr)) return false;
+  }
   return true;
 }
 

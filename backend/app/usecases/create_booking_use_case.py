@@ -1,6 +1,6 @@
-from datetime import UTC, datetime, time, timedelta
+from datetime import UTC, datetime, timedelta
 
-from app.domain.objects import BookingObj
+from app.domain.objects import BookingObj, SlotObj
 from app.domain.result import Failure, Success
 from app.repositories.booking_repository import BookingRepository
 from app.repositories.meeting_type_repository import MeetingTypeRepository
@@ -15,7 +15,7 @@ class CreateBookingUseCase:
         self._booking_repo = booking_repo
         self._meeting_type_repo = meeting_type_repo
 
-    async def __call__(
+    async def __call__(  # noqa: PLR0911
         self,
         meeting_type_id: str,
         guest_name: str,
@@ -36,11 +36,25 @@ class CreateBookingUseCase:
         if request_date < today or request_date > today + timedelta(days=13):
             return Failure(error="Date is outside booking window", code="OUTSIDE_BOOKING_WINDOW")
 
+        if request_date.weekday() >= 5:  # noqa: PLR2004
+            return Failure(error="Weekends are not available", code="OUTSIDE_WORK_HOURS")
+
+        if any(h.date == request_date for h in meeting_type.holidays):
+            return Failure(error="Date is a holiday", code="OUTSIDE_WORK_HOURS")
+
         tz = start_time.tzinfo
-        work_start = datetime.combine(start_time.date(), time(9, 0), tzinfo=tz)
-        work_end = datetime.combine(start_time.date(), time(18, 0), tzinfo=tz)
+        day_date = start_time.date()
+        work_start = datetime.combine(day_date, meeting_type.working_hours_start, tzinfo=tz)
+        work_end = datetime.combine(day_date, meeting_type.working_hours_end, tzinfo=tz)
         if start_time < work_start or end_time > work_end:
             return Failure(error="Slot is outside working hours", code="OUTSIDE_WORK_HOURS")
+
+        slot = SlotObj(start_time=start_time, end_time=end_time)
+        for b in meeting_type.breaks:
+            break_start = datetime.combine(start_time.date(), b.start_time, tzinfo=tz)
+            break_end = datetime.combine(start_time.date(), b.end_time, tzinfo=tz)
+            if slot.start_time < break_end and slot.end_time > break_start:
+                return Failure(error="Slot overlaps with a break", code="OUTSIDE_WORK_HOURS")
 
         overlapping = await self._booking_repo.find_overlapping(start_time, end_time)
         if overlapping:

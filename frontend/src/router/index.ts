@@ -36,6 +36,11 @@ const routes = [
         component: () => import("@/pages/admin/CreateMeetingTypePage.vue"),
       },
       {
+        path: "meeting_types/:meetingTypeId/edit",
+        name: "edit-meeting-type",
+        component: () => import("@/pages/admin/EditMeetingTypePage.vue"),
+      },
+      {
         path: "bookings",
         name: "bookings",
         component: () => import("@/pages/admin/BookingsPage.vue"),
