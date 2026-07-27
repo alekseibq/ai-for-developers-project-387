@@ -224,3 +224,4 @@ refactor(backend): extract slot overlap logic
 7. TypeSpec is source of truth for API contracts; generated OpenAPI is checked in.
 8. Ruff line-length=100, no trailing commas convention observed.
 9. **Conventional Commits** enforced locally (commit-msg hook) and in CI (PR).
+10. **Cost Control** — see [docs/cost-control.md](docs/cost-control.md) for rate limits and API cost policy.
