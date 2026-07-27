@@ -18,37 +18,21 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       id-token: write
-      contents: write
-      pull-requests: write
-      issues: write
+      contents: read
+      pull-requests: read
+      issues: read
     steps:
       - name: Checkout repository
         uses: actions/checkout@v6
         with:
-          persist-credentials: true
-
-      - name: Configure git identity
-        run: |
-          git config --global user.email "opencode@users.noreply.github.com"
-          git config --global user.name "opencode[bot]"
-
-      - name: Reset PR branch to match main for opencode
-        if: github.event.issue.pull_request
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          HEAD_REF=$(gh pr view "${{ github.event.issue.number }}" \
-            --json headRefName --jq .headRefName)
-          git push origin HEAD:refs/heads/"$HEAD_REF" --force
+          persist-credentials: false
 
       - name: Run opencode
         uses: anomalyco/opencode/github@latest
         env:
           OPENCODE_API_KEY: ${{ secrets.OPENCODE_API_KEY }}
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           model: opencode/deepseek-v4-flash-free
-          use_github_token: true
           prompt: |
             Always use Conventional Commits format for all commit messages: type(scope): description.
             Allowed types: feat, fix, docs, style, refactor, perf, test, build, ci, chore, revert.
@@ -64,15 +48,15 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v6
+        with:
+          persist-credentials: false
 
       - name: Run opencode to explain issue
         uses: anomalyco/opencode/github@latest
         env:
           OPENCODE_API_KEY: ${{ secrets.OPENCODE_API_KEY }}
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           model: opencode/deepseek-v4-flash-free
-          use_github_token: true
           prompt: |
             A new issue has been created. Analyze the issue and post a comment explaining:
             - What the issue is about
