@@ -9,7 +9,7 @@ from app.infrastructure.database import Database
 def _parse_time(value: Any) -> str:
     if isinstance(value, str):
         return value
-    return value.strftime("%H:%M")
+    return value.strftime("%H:%M")  # type: ignore[no-any-return]
 
 
 class MeetingTypeRepository:
@@ -56,7 +56,7 @@ class MeetingTypeRepository:
             duration_minutes=duration_minutes,
         )
 
-    async def update(  # noqa: PLR0913, PLR0917
+    async def update(  # noqa: PLR0913
         self,
         id: str,
         name: str | None = None,
