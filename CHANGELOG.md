@@ -1,5 +1,21 @@
 # Changelog
 
+## [0.4.0](https://github.com/alekseibq/ai-for-developers-project-387/compare/calcom-v0.3.0...calcom-v0.4.0) (2026-07-27)
+
+
+### Features
+
+* **ci:** auto-explain new issues with opencode ([ffb7c86](https://github.com/alekseibq/ai-for-developers-project-387/commit/ffb7c869b0054bc4cd31108579aec3dc89788e84))
+* **ci:** auto-explain new issues with opencode ([8d5eea9](https://github.com/alekseibq/ai-for-developers-project-387/commit/8d5eea91c2367d5125731c188c502fa69209ab7f))
+
+
+### Bug Fixes
+
+* **backend:** remove allow_credentials from CORS config ([a9e76cb](https://github.com/alekseibq/ai-for-developers-project-387/commit/a9e76cbed33fc6302b2082e2226316e30981e341))
+* **backend:** remove allow_credentials from CORS config ([2567b7b](https://github.com/alekseibq/ai-for-developers-project-387/commit/2567b7b1cedd8014eea67fe11d41afdc38ce5900)), closes [#22](https://github.com/alekseibq/ai-for-developers-project-387/issues/22)
+* **ci:** add model and env config for opencode action in lighthouse workflow ([e1d9fe3](https://github.com/alekseibq/ai-for-developers-project-387/commit/e1d9fe33f37155720abaf7f8e71fc8067b2fb604))
+* **ci:** add model and env config for opencode action in lighthouse workflow ([a22a29b](https://github.com/alekseibq/ai-for-developers-project-387/commit/a22a29b22315fa60ad8cf482d3cf5c4709231be8))
+
 ## [0.3.0](https://github.com/alekseibq/ai-for-developers-project-387/compare/calcom-v0.2.0...calcom-v0.3.0) (2026-07-27)
 
 
