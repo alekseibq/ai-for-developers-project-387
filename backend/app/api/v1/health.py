@@ -7,6 +7,14 @@ from app.usecases.health import HealthUseCase
 
 router = APIRouter(tags=["health"])
 
+_counter: dict[str, int] = {"count": 0}
+
+
+@router.get("/api/v1/schedule-mark")
+async def schedule_mark() -> dict[str, int]:
+    _counter["count"] += 1
+    return {"count": _counter["count"]}
+
 
 @router.get("/api/v1/health")
 async def get_health(
