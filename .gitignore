@@ -17,7 +17,8 @@ typespec/node_modules/
 
 # Environment
 .env
-opencode.json
+# opencode.json is tracked; use env vars for secrets
+# opencode.json
 
 # TypeSpec
 typespec/dist/
