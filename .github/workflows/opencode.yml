@@ -12,8 +12,12 @@ concurrency:
   group: opencode-${{ github.event.issue.number || github.event.pull_request.number }}
   cancel-in-progress: true
 
+env:
+  MAX_HOURLY_RUNS: ${{ vars.MAX_HOURLY_RUNS || 20 }}
+  MAX_DAILY_RUNS: ${{ vars.MAX_DAILY_RUNS || 100 }}
+
 jobs:
-  opencode:
+  rate-limit-check:
     if: |
       (contains(github.event.comment.body, ' /oc') ||
        startsWith(github.event.comment.body, '/oc') ||
@@ -21,6 +25,68 @@ jobs:
        startsWith(github.event.comment.body, '/opencode')) &&
       github.actor != 'github-actions[bot]' &&
       github.actor != 'opencode[bot]'
+    runs-on: ubuntu-latest
+    permissions:
+      actions: read
+      issues: write
+    outputs:
+      allowed: ${{ steps.check.outputs.allowed }}
+    steps:
+      - name: Check rate limit
+        id: check
+        run: |
+          HOURLY_LIMIT="${{ env.MAX_HOURLY_RUNS }}"
+          DAILY_LIMIT="${{ env.MAX_DAILY_RUNS }}"
+
+          echo "Checking rate limits (hourly: $HOURLY_LIMIT, daily: $DAILY_LIMIT)..."
+
+          NOW=$(date -u +%s)
+          ONE_HOUR_AGO=$((NOW - 3600))
+          ONE_DAY_AGO=$((NOW - 86400))
+
+          RUNS=$(gh run list --workflow opencode.yml --limit 100 --json createdAt,conclusion --jq '.[] | select(.conclusion == "success" or .conclusion == "failure") | .createdAt')
+
+          HOURLY_COUNT=0
+          DAILY_COUNT=0
+
+          while IFS= read -r DATE; do
+            [ -z "$DATE" ] && continue
+            TS=$(date -d "$DATE" -u +%s 2>/dev/null || echo 0)
+            [ "$TS" -ge "$ONE_DAY_AGO" ] && DAILY_COUNT=$((DAILY_COUNT + 1))
+            [ "$TS" -ge "$ONE_HOUR_AGO" ] && HOURLY_COUNT=$((HOURLY_COUNT + 1))
+          done <<< "$RUNS"
+
+          echo "hourly_count=$HOURLY_COUNT (limit: $HOURLY_LIMIT)"
+          echo "daily_count=$DAILY_COUNT (limit: $DAILY_LIMIT)"
+
+          if [ "$HOURLY_COUNT" -ge "$HOURLY_LIMIT" ] || [ "$DAILY_COUNT" -ge "$DAILY_LIMIT" ]; then
+            echo "allowed=false" >> "$GITHUB_OUTPUT"
+
+            EXCEEDED=""
+            [ "$HOURLY_COUNT" -ge "$HOURLY_LIMIT" ] && EXCEEDED="hourly ($HOURLY_COUNT / $HOURLY_LIMIT)"
+            [ "$DAILY_COUNT" -ge "$DAILY_LIMIT" ] && EXCEEDED="${EXCEEDED}daily ($DAILY_COUNT / $DAILY_LIMIT)"
+
+            gh issue create \
+              --title "\u26a0\ufe0f Rate limit exceeded" \
+              --label "cost-control" \
+              --body "Workflow run #${{ github.run_id }} was blocked.
+
+        **Exceeded limit**: $EXCEEDED
+        **Repository**: ${{ github.repository }}
+        **Trigger**: ${{ github.event_name }}
+        **Workflow URL**: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}" \
+              --repo "${{ github.repository }}" 2>/dev/null || echo "Warning: could not create alert issue"
+
+            echo "Rate limit exceeded: $EXCEEDED. Workflow blocked."
+            exit 1
+          fi
+
+          echo "allowed=true" >> "$GITHUB_OUTPUT"
+          echo "Rate limit OK. Proceeding."
+
+  opencode:
+    needs: rate-limit-check
+    if: needs.rate-limit-check.outputs.allowed == 'true'
     runs-on: ubuntu-latest
     permissions:
       id-token: write
