@@ -56,7 +56,7 @@ class MeetingTypeRepository:
             duration_minutes=duration_minutes,
         )
 
-    async def update(  # noqa: PLR0913, PLR0917
+    async def update(  # noqa: PLR0913
         self,
         id: str,
         name: str | None = None,

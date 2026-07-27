@@ -7,7 +7,7 @@ class UpdateMeetingTypeUseCase:
     def __init__(self, repo: MeetingTypeRepository) -> None:
         self._repo = repo
 
-    async def __call__(  # noqa: PLR0913, PLR0917
+    async def __call__(  # noqa: PLR0913
         self,
         id: str,
         name: str | None = None,
