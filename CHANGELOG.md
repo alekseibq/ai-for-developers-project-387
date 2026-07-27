@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.3.0](https://github.com/alekseibq/ai-for-developers-project-387/compare/calcom-v0.2.0...calcom-v0.3.0) (2026-07-27)
+
+
+### Features
+
+* **infra:** add Lighthouse CI audit workflow ([67e72c3](https://github.com/alekseibq/ai-for-developers-project-387/commit/67e72c3880d34217e68ef7d9a83801b421f7fab1))
+* **infra:** add Lighthouse CI audit workflow ([8b4baf1](https://github.com/alekseibq/ai-for-developers-project-387/commit/8b4baf165896aaf10170a213233ba738100f64d1))
+
 ## [0.2.0](https://github.com/alekseibq/ai-for-developers-project-387/compare/calcom-v0.1.0...calcom-v0.2.0) (2026-07-27)
 
 
