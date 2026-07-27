@@ -1,0 +1,13 @@
+name: Cron Hello World
+
+on:
+  schedule:
+    - cron: '45 13 * * *'
+  workflow_dispatch:
+
+jobs:
+  test_cron:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Print Hello World
+        run: echo "Action triggered by cron $(date -u)"
