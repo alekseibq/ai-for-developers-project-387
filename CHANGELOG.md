@@ -1,5 +1,15 @@
 # Changelog
 
+## [0.4.1](https://github.com/alekseibq/ai-for-developers-project-387/compare/calcom-v0.4.0...calcom-v0.4.1) (2026-07-27)
+
+
+### Bug Fixes
+
+* **ci:** add actor filter to prevent workflow recursion in opencode.yml ([f741ba5](https://github.com/alekseibq/ai-for-developers-project-387/commit/f741ba504def300dc63a652e3274e791671d2891))
+* **ci:** add actor filter to prevent workflow recursion in opencode.yml ([8161dbe](https://github.com/alekseibq/ai-for-developers-project-387/commit/8161dbef904f24ddccd0654e84c79b8b781680ab))
+* **ci:** add concurrency group to opencode.yml to prevent parallel runs ([e835abe](https://github.com/alekseibq/ai-for-developers-project-387/commit/e835abe1ae9bd055335570adb262a5d5ec099b1d))
+* **ci:** add concurrency group to opencode.yml to prevent parallel runs ([3e18e58](https://github.com/alekseibq/ai-for-developers-project-387/commit/3e18e58e9b5331a86b6785b3856e315fbf1deead))
+
 ## [0.4.0](https://github.com/alekseibq/ai-for-developers-project-387/compare/calcom-v0.3.0...calcom-v0.4.0) (2026-07-27)
 
 
